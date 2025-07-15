@@ -1,6 +1,7 @@
 "use client";
 
 import { SearchBar } from "@/components/SearchBar";
+import { SearchHistory } from "@/components/SearchHistory";
 import { TemperatureToggle } from "@/components/TemperatureToggle";
 import { WeatherCard } from "@/components/WeatherCard";
 import { useWeatherData } from "@/hooks/useWeatherData";
@@ -20,6 +21,10 @@ export default function Home() {
     addToSearchHistory(city);
   };
 
+  const handleHistorySelect = (city: string) => {
+    setSearchCity(city);
+  };
+
   return (
     <div className="min-h-screen py-10 px-6 bg-gray-100">
       <div className="max-w-xl mx-auto">
@@ -32,8 +37,9 @@ export default function Home() {
           <TemperatureToggle />
         </div>
 
+        <SearchHistory onCitySelect={handleHistorySelect} />
+
         {isLoading && <p>Loading...</p>}
-        {error && <p className="text-red-600">Error: {error}</p>}
 
         {currentWeather && !isLoading && (
           <div className="space-y-6">
