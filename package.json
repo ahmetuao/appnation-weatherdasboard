@@ -40,7 +40,11 @@
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
     "tailwindcss-animate": "^1.0.7",
-    "swr": "latest"
+    "swr": "latest",
+    "zustand": "latest",
+    "lucide-react": "^0.454.0",
+    "class-variance-authority": "^0.7.1",
+    "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
     "typescript": "^5",
