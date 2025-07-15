@@ -1,47 +1,50 @@
-"use client"
+"use client";
 
-import { fetchWeatherData } from "@/lib/weatherApi"
-import { useWeatherStore } from "@/store/weatherStore"
-import { useEffect } from "react"
-import useSWR from "swr"
+import { fetchWeatherData } from "@/lib/weatherApi";
+import { useWeatherStore } from "@/store/weatherStore";
+import { useEffect } from "react";
+import useSWR from "swr";
 
-export function useWeatherData(city: string | null) {
-  const { setCurrentWeather, setForecast, setLoading, setError, clearError } = useWeatherStore()
+export function useWeatherData(lat: number | null, lon: number | null) {
+  const { setCurrentWeather, setForecast, setLoading, setError, clearError } =
+    useWeatherStore();
 
   const { data, error, isLoading, mutate } = useSWR(
-    city ? ["weather", city] : null,
-    ([, cityName]) => fetchWeatherData(cityName),
+    lat && lon ? ["weather", lat, lon] : null,
+    ([, latitude, longitude]) => fetchWeatherData(latitude, longitude),
     {
       revalidateOnFocus: false,
-      dedupingInterval: 300000, // 5 minutes
+      dedupingInterval: 300000, 
       errorRetryCount: 2,
       errorRetryInterval: 1000,
-    },
-  )
+    }
+  );
 
   useEffect(() => {
-    setLoading(isLoading)
-  }, [isLoading, setLoading])
+    setLoading(isLoading);
+  }, [isLoading, setLoading]);
 
   useEffect(() => {
     if (error) {
-      setError(error.message || "An error occurred while fetching weather data")
+      setError(
+        error.message || "An error occurred while fetching weather data"
+      );
     } else {
-      clearError()
+      clearError();
     }
-  }, [error, setError, clearError])
+  }, [error, setError, clearError]);
 
   useEffect(() => {
     if (data) {
-      setCurrentWeather(data.current)
-      setForecast(data.forecast)
+      setCurrentWeather(data.current);
+      setForecast(data.forecast);
     }
-  }, [data, setCurrentWeather, setForecast])
+  }, [data, setCurrentWeather, setForecast]);
 
   return {
     data,
     error,
     isLoading,
     refetch: mutate,
-  }
+  };
 }

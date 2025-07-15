@@ -1,22 +1,28 @@
-import type { ForecastDay, SearchHistoryItem, TemperatureUnit, WeatherData } from "@/types/weather"
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import type {
+  CitySuggestion,
+  ForecastDay,
+  SearchHistoryItem,
+  TemperatureUnit,
+  WeatherData,
+} from "@/types/weather";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface WeatherStore {
-  currentWeather: WeatherData | null
-  forecast: ForecastDay[]
-  searchHistory: SearchHistoryItem[]
-  temperatureUnit: TemperatureUnit
-  isLoading: boolean
-  error: string | null
+  currentWeather: WeatherData | null;
+  forecast: ForecastDay[];
+  searchHistory: SearchHistoryItem[];
+  temperatureUnit: TemperatureUnit;
+  isLoading: boolean;
+  error: string | null;
 
-  setCurrentWeather: (weather: WeatherData) => void
-  setForecast: (forecast: ForecastDay[]) => void
-  addToSearchHistory: (city: string) => void
-  toggleTemperatureUnit: () => void
-  setLoading: (loading: boolean) => void
-  setError: (error: string | null) => void
-  clearError: () => void
+  setCurrentWeather: (weather: WeatherData) => void;
+  setForecast: (forecast: ForecastDay[]) => void;
+  addToSearchHistory: (city: CitySuggestion) => void;
+  toggleTemperatureUnit: () => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+  clearError: () => void;
 }
 
 export const useWeatherStore = create<WeatherStore>()(
@@ -33,21 +39,32 @@ export const useWeatherStore = create<WeatherStore>()(
       setForecast: (forecast) => set({ forecast }),
 
       addToSearchHistory: (city) => {
-        const history = get().searchHistory
+        const history = get().searchHistory;
+
+        const label = `${city.name}${city.state ? ", " + city.state : ""}, ${
+          city.country
+        }`;
+
         const newItem: SearchHistoryItem = {
-          city,
+          city: label,
+          lat: city.lat,
+          lon: city.lon,
           timestamp: Date.now(),
-        }
+        };
 
-        const filteredHistory = history.filter((item) => item.city.toLowerCase() !== city.toLowerCase())
+        const filteredHistory = history.filter(
+          (item) => item.lat !== city.lat || item.lon !== city.lon
+        );
 
-        const updatedHistory = [newItem, ...filteredHistory].slice(0, 5)
-        set({ searchHistory: updatedHistory })
+        const updatedHistory = [newItem, ...filteredHistory].slice(0, 5);
+        set({ searchHistory: updatedHistory });
       },
 
       toggleTemperatureUnit: () => {
-        const currentUnit = get().temperatureUnit
-        set({ temperatureUnit: currentUnit === "celsius" ? "fahrenheit" : "celsius" })
+        const currentUnit = get().temperatureUnit;
+        set({
+          temperatureUnit: currentUnit === "celsius" ? "fahrenheit" : "celsius",
+        });
       },
 
       setLoading: (loading) => set({ isLoading: loading }),
@@ -60,6 +77,6 @@ export const useWeatherStore = create<WeatherStore>()(
         searchHistory: state.searchHistory,
         temperatureUnit: state.temperatureUnit,
       }),
-    },
-  ),
-)
+    }
+  )
+);

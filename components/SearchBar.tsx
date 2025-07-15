@@ -1,53 +1,60 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useCitySuggestions } from "@/hooks/useCitySuggestions";
+import { CitySuggestion } from "@/lib/getCitySuggestions";
 import { useWeatherStore } from "@/store/weatherStore";
+import clsx from "clsx";
 import { Search, X } from "lucide-react";
-import type React from "react";
 import { useState } from "react";
 
 interface SearchBarProps {
-  onSearch: (city: string) => void;
+  onSearch: (city: CitySuggestion) => void;
   isLoading?: boolean;
 }
 
 export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
   const [query, setQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const { error, clearError } = useWeatherStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      clearError();
-      onSearch(query.trim());
-    }
-  };
+  const { results } = useCitySuggestions(query);
 
   const handleClear = () => {
     setQuery("");
     clearError();
+    setShowSuggestions(false);
+  };
+
+  const handleSelect = (city: CitySuggestion) => {
+    const label = `${city.name}${city.state ? ", " + city.state : ""}, ${
+      city.country
+    }`;
+    setQuery(label);
+    clearError();
+    onSearch(city);
+    setShowSuggestions(false);
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto">
+    <div className="w-full max-w-xl mx-auto relative">
       <form
-        onSubmit={handleSubmit}
-        className="relative bg-white/70 backdrop-blur-md rounded-full shadow-md border border-gray-200 px-4 py-2 flex items-center gap-3 transition-all duration-200"
+        onSubmit={(e) => e.preventDefault()}
+        className="bg-white/70 backdrop-blur-md rounded-full shadow-md border border-gray-200 px-4 py-2 flex items-center gap-3 transition-all duration-200"
       >
-        {/* Search Icon */}
         <Search className="text-gray-400 w-5 h-5" />
 
-        {/* Input Field */}
         <input
           type="text"
           placeholder="Enter city name..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setShowSuggestions(true);
+          }}
           disabled={isLoading}
           className="flex-grow bg-transparent text-gray-800 placeholder-gray-400 focus:outline-none text-base"
         />
 
-        {/* Clear Button */}
         {query && (
           <button
             type="button"
@@ -58,21 +65,31 @@ export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
           </button>
         )}
 
-        {/* Submit Button */}
-        <Button
+        {/* <Button
           type="submit"
-          disabled={!query.trim() || isLoading}
-          className="h-9 px-4 text-sm rounded-full bg-indigo-500 hover:bg-indigo-600 text-white disabled:bg-gray-300 disabled:cursor-not-allowed transition"
+          disabled
+          className="h-9 px-4 text-sm rounded-full bg-indigo-300 text-white cursor-not-allowed opacity-60"
         >
-          {isLoading ? "Searching..." : "Search"}
-        </Button>
+          Select from list
+        </Button> */}
       </form>
 
-      {/* Error */}
-      {error && (
-        <div className="mt-3 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 shadow-sm">
-          {error}
-        </div>
+      {/* Autocomplete Dropdown */}
+      {showSuggestions && results.length > 0 && (
+        <ul className="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-lg z-50 overflow-hidden">
+          {results.map((city, i) => (
+            <li
+              key={i}
+              onClick={() => handleSelect(city)}
+              className={clsx(
+                "px-4 py-2 hover:bg-indigo-50 cursor-pointer text-sm text-gray-800 border-b last:border-b-0"
+              )}
+            >
+              {city.name}
+              {city.state ? `, ${city.state}` : ""}, {city.country}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
