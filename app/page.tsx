@@ -1,6 +1,7 @@
 "use client";
 
 import { SearchBar } from "@/components/SearchBar";
+import { TemperatureToggle } from "@/components/TemperatureToggle";
 import { WeatherCard } from "@/components/WeatherCard";
 import { useWeatherData } from "@/hooks/useWeatherData";
 import { useWeatherStore } from "@/store/weatherStore";
@@ -26,7 +27,10 @@ export default function Home() {
           Weather Dashboard
         </h1>
 
-        <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+          <TemperatureToggle />
+        </div>
 
         {isLoading && <p>Loading...</p>}
         {error && <p className="text-red-600">Error: {error}</p>}
