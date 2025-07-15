@@ -1,6 +1,7 @@
 "use client";
 
 import { SearchBar } from "@/components/SearchBar";
+import { WeatherCard } from "@/components/WeatherCard";
 import { useWeatherData } from "@/hooks/useWeatherData";
 import { useWeatherStore } from "@/store/weatherStore";
 import { useState } from "react";
@@ -30,15 +31,9 @@ export default function Home() {
         {isLoading && <p>Loading...</p>}
         {error && <p className="text-red-600">Error: {error}</p>}
 
-        {currentWeather && (
-          <div className="bg-white p-4 rounded shadow mt-4">
-            <h2 className="text-xl font-semibold mb-2">
-              {currentWeather.name}, {currentWeather.country}
-            </h2>
-            <p>🌡️ Temp: {currentWeather.temperature}°C</p>
-            <p>💧 Humidity: {currentWeather.humidity}%</p>
-            <p>🌬️ Wind: {currentWeather.windSpeed} km/h</p>
-            <p>☁️ Condition: {currentWeather.description}</p>
+        {currentWeather && !isLoading && (
+          <div className="space-y-6">
+            <WeatherCard />
           </div>
         )}
       </div>
