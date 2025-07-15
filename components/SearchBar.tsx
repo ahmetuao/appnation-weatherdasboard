@@ -1,11 +1,9 @@
 "use client";
 
-import type React from "react";
-
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useWeatherStore } from "@/store/weatherStore";
 import { Search, X } from "lucide-react";
+import type React from "react";
 import { useState } from "react";
 
 interface SearchBarProps {
@@ -31,42 +29,49 @@ export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <form onSubmit={handleSubmit} className="relative">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            type="text"
-            placeholder="Enter city name..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="pl-10 pr-20 h-12 text-lg"
-            disabled={isLoading}
-          />
-          {query && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={handleClear}
-              className="absolute right-12 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
+    <div className="w-full max-w-xl mx-auto">
+      <form
+        onSubmit={handleSubmit}
+        className="relative bg-white/70 backdrop-blur-md rounded-full shadow-md border border-gray-200 px-4 py-2 flex items-center gap-3 transition-all duration-200"
+      >
+        {/* Search Icon */}
+        <Search className="text-gray-400 w-5 h-5" />
+
+        {/* Input Field */}
+        <input
+          type="text"
+          placeholder="Enter city name..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          disabled={isLoading}
+          className="flex-grow bg-transparent text-gray-800 placeholder-gray-400 focus:outline-none text-base"
+        />
+
+        {/* Clear Button */}
+        {query && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="text-gray-400 hover:text-red-500 transition-colors duration-150"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* Submit Button */}
         <Button
           type="submit"
           disabled={!query.trim() || isLoading}
-          className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10"
+          className="h-9 px-4 text-sm rounded-full bg-indigo-500 hover:bg-indigo-600 text-white disabled:bg-gray-300 disabled:cursor-not-allowed transition"
         >
           {isLoading ? "Searching..." : "Search"}
         </Button>
       </form>
 
+      {/* Error */}
       {error && (
-        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-red-700 text-sm">{error}</p>
+        <div className="mt-3 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 shadow-sm">
+          {error}
         </div>
       )}
     </div>

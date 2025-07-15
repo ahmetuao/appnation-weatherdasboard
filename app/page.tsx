@@ -26,42 +26,57 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Weather Dashboard
+    <div className="min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 backdrop-blur-lg relative">
+      <div className="container mx-auto px-4 py-12">
+        {/* Temperature Toggle sağ üstte */}
+        <div className="absolute top-6 right-6">
+          <TemperatureToggle />
+        </div>
+
+        <header className="text-center mb-10">
+          <h1 className="text-5xl font-extrabold text-white drop-shadow-lg mb-3 tracking-tight">
+            🌦️ Weather Dashboard
           </h1>
-          <p className="text-gray-600">
-            Get real-time weather information for any city
+          <p className="text-lg text-white/80">
+            Explore real-time weather & forecast with a modern UI
           </p>
         </header>
 
-        <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="space-y-8">
+          {/* Ortalanmış Search Bar */}
+          <div className="flex justify-center">
             <SearchBar onSearch={handleSearch} isLoading={isLoading} />
-            <TemperatureToggle />
           </div>
 
-          <SearchHistory onCitySelect={handleHistorySelect} />
+          <div className="flex justify-center">
+            <SearchHistory onCitySelect={handleHistorySelect} />
+          </div>
 
-          {isLoading && <LoadingSpinner />}
+          {isLoading && (
+            <div className="flex justify-center mt-8">
+              <LoadingSpinner />
+            </div>
+          )}
 
           {currentWeather && !isLoading && (
-            <div className="space-y-6">
-              <WeatherCard />
-              <ForecastCard />
+            <div className="grid md:grid-cols-2 gap-6 mt-6">
+              <div className="bg-white/80 rounded-2xl shadow-xl p-6 backdrop-blur-md transition hover:scale-[1.01]">
+                <WeatherCard />
+              </div>
+              <div className="bg-white/80 rounded-2xl shadow-xl p-6 backdrop-blur-md transition hover:scale-[1.01]">
+                <ForecastCard />
+              </div>
             </div>
           )}
 
           {!currentWeather && !isLoading && (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🌤️</div>
-              <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+            <div className="text-center mt-16 opacity-90">
+              <div className="text-[5rem] mb-4">🌤️</div>
+              <h2 className="text-3xl font-semibold text-white drop-shadow-md mb-2">
                 Welcome to Weather Dashboard
               </h2>
-              <p className="text-gray-600">
-                Search for a city to get started with weather information
+              <p className="text-white/80">
+                Search for a city to get started and see the forecast
               </p>
             </div>
           )}

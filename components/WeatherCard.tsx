@@ -26,7 +26,7 @@ export function WeatherCard() {
   const unit = getTemperatureUnit(temperatureUnit);
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full h-full mx-auto">
       <CardContent className="p-6">
         <div className="text-center mb-4">
           <div className="flex items-center justify-center gap-2 mb-2">
