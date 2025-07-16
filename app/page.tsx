@@ -39,8 +39,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 backdrop-blur-lg relative">
-      <div className="container mx-auto px-4 py-12">
-        <div className="absolute top-6 right-6">
+      <div className="container mx-auto px-4 lg:py-12 py-6">
+        <div className="flex lg:justify-end justify-center sticky top-3 right-3 mb-6 lg:mb-0 z-50">
           <TemperatureToggle />
         </div>
 

@@ -1,6 +1,5 @@
 import { CitySuggestion } from "@/types/weather";
 
-
 export async function getCitySuggestions(
   query: string
 ): Promise<CitySuggestion[]> {
@@ -13,11 +12,15 @@ export async function getCitySuggestions(
 
   const data = await res.json();
 
-  return data.map((item: any) => ({
-    name: item.name,
-    country: item.country,
-    state: item.state,
-    lat: item.lat,
-    lon: item.lon,
-  }));
+  if (data?.length) {
+    return data?.map((item: any) => ({
+      name: item.name,
+      country: item.country,
+      state: item.state,
+      lat: item.lat,
+      lon: item.lon,
+    }));
+  } else {
+    return [];
+  }
 }
